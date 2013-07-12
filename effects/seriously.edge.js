@@ -82,13 +82,15 @@
 					'varying vec4 vPosition;\n' +
 					'\n' +
 					'uniform sampler2D source;\n' +
+					'uniform float enhance;\n' +
 					'uniform float pixelWidth;\n' +
 					'uniform float pixelHeight;\n' +
 					'uniform mat3 G[9];\n' +
 					'\n' +
 					'void main(void) {\n' +
 					'	mat3 I;\n' +
-					'	float dp3, cnv[9];\n' +
+					'	float dp3;\n' +
+					'	float cnv[9];\n' +
 					'	vec3 tc;\n' +
 
 					// fetch the 3x3 neighbourhood and use the RGB vector's length as intensity value
@@ -124,8 +126,12 @@
 					'	float S = (cnv[0] + cnv[1]) + (cnv[2] + cnv[3]) + (cnv[4] + cnv[5]) + (cnv[6] + cnv[7]) + cnv[8];\n' +
 					'	tc = vec3(sqrt(M/S));\n' +
 					'#endif\n' +
-
-					'	gl_FragColor = vec4(tc, 1.0);\n' +
+					
+					'	if (enhance == 1.0){\n' +
+					'		gl_FragColor =  texture2D(source, vTexCoord) +  vec4(0.0, tc.g, 0.0, 0.0);\n' +					
+					'	} else {\n' +
+					'		gl_FragColor = vec4(tc, 1.0);\n' +
+					'	}\n' +
 					'}\n';
 
 				return shaderSource;
@@ -156,6 +162,12 @@
 						['sobel', 'Sobel'],
 						['frei-chen', 'Frei-Chen']
 					]
+				},
+				enhance: {
+					type: 'number',
+					uniform: 'enhance',
+					shaderDirty: true,
+					defaultValue: 0,
 				}
 			},
 			description: 'Edge Detect',
