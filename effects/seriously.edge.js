@@ -82,7 +82,7 @@
 					'varying vec4 vPosition;\n' +
 					'\n' +
 					'uniform sampler2D source;\n' +
-					'uniform float enhance;\n' +
+					'uniform bool enhance;\n' +
 					'uniform float pixelWidth;\n' +
 					'uniform float pixelHeight;\n' +
 					'uniform mat3 G[9];\n' +
@@ -127,7 +127,7 @@
 					'	tc = vec3(sqrt(M/S));\n' +
 					'#endif\n' +
 					
-					'	if (enhance == 1.0){\n' +
+					'	if (enhance){\n' +
 					'		gl_FragColor =  texture2D(source, vTexCoord) +  vec4(0.0, tc.g, 0.0, 0.0);\n' +					
 					'	} else {\n' +
 					'		gl_FragColor = vec4(tc, 1.0);\n' +
@@ -164,10 +164,9 @@
 					]
 				},
 				enhance: {
-					type: 'number',
+					type: 'boolean',
 					uniform: 'enhance',
-					shaderDirty: true,
-					defaultValue: 0,
+					defaultValue: false,
 				}
 			},
 			description: 'Edge Detect',
